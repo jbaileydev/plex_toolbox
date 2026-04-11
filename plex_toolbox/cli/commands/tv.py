@@ -6,7 +6,6 @@ from pathlib import Path
 from typing import Any, Literal
 
 import typer
-from dotenv import load_dotenv
 from rich.console import Console
 from rich.prompt import Prompt
 from rich.table import Table
@@ -100,7 +99,7 @@ def _prompt_episode_number(episode_filename: str) -> int:
         return int(eno)
 
 
-@tv_app.command("name-files", help="Use the TVDB API to automatically batch-rename TV episode files for Plex.")
+@tv_app.command("name-files", help="Use the TVDB API to automatically batch-rename TV episode files for Plex.", no_args_is_help=True)
 def name_files_cmd(
     ctx: typer.Context,
     input_dir: Path = typer.Argument(..., exists=True, dir_okay=True, file_okay=False, help="Input directory containing TV show video file(s) to rename."),
@@ -109,7 +108,6 @@ def name_files_cmd(
     localization_lang: str = typer.Option("eng", help="The language to localize textual data to."),
     dry_run: bool = typer.Option(False, "--dry-run/--no-dry-run", help="Preview changes without actually moving/renaming any files."),
 ) -> None:
-    load_dotenv()
     tvdb_api_key = os.getenv("TVDB_API_KEY")
     if not tvdb_api_key:
         console.print("[bold red]Unable to locate TVDB_API_KEY in environment variables.[/bold red]")

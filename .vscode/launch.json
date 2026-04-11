@@ -9,11 +9,14 @@
             "name": "Plex TV Renamer",
             "type": "debugpy",
             "request": "launch",
-            "python": "${workspaceFolder}/.venv/bin/python",
-            "program": "${workspaceFolder}/scripts/tv_file_namer.py",
+            "program": "${workspaceFolder}/plex_toolbox/cli/app.py",
+            "args": ["tv", "name-files", "${workspaceFolder}/in", "--output-dir", "${workspaceFolder}/out", "--dry-run"],
             "console": "integratedTerminal",
-            "cwd": "${workspaceFolder}/scripts",
-            // "args": ["shows"]
+            "justMyCode": true,
+            "cwd": "${workspaceFolder}/plex_toolbox",
+            "env": {
+                "TVDB_API_KEY": "${env:TVDB_API_KEY}"
+            }
         }
     ]
 }

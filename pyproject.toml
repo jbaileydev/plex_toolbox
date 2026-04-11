@@ -5,7 +5,6 @@ description = "Small CLI interface full of python tools to help with Plex manage
 readme = "README.md"
 requires-python = ">=3.12"
 dependencies = [
-    "dotenv==0.9.9",
     "httpx>=0.28.1",
     "pip>=26.0.1",
     "rich==14.3.3",
