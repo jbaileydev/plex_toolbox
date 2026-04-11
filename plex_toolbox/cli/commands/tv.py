@@ -40,7 +40,7 @@ def _prompt_for_series_from_hits(series_hits: list[dict[str, Any]]) -> dict[str,
     console.print(table)
     num_hits = len(series_hits)
     while True:
-        selected_idx = Prompt.ask("Choose a show number:", choices=[i for i in range(num_hits, start=1)], show_choices=False)
+        selected_idx = Prompt.ask("Choose a show number", choices=[str(i) for i in range(1, num_hits)])
         if not selected_idx or not selected_idx.isdigit() or int(selected_idx) < 1 or int(selected_idx) > num_hits:
             console.print("Please enter a valid number from the table.")
             continue
@@ -48,15 +48,16 @@ def _prompt_for_series_from_hits(series_hits: list[dict[str, Any]]) -> dict[str,
 
 
 def _prompt_for_mode() -> Literal["auto", "confirm", "manual"]:
-    table = Table("Operation Modes")
+    table = Table(title="Operation Modes")
     table.add_column("#")
     table.add_column("Mode")
     table.add_column("Description")
     table.add_row("1", "Auto", "Infer season/episode and rename without asking per-file")
     table.add_row("2", "Confirm", "Infer season/episode and proposed name, ask Y/N per-file")
     table.add_row("3", "Manual", "Ask for season/episode for each file")
+    console.print(table)
     while True:
-        mode = Prompt.ask("Choose a mode:", choices=["1", "2", "3"])
+        mode = Prompt.ask("Choose a mode", choices=["1", "2", "3"])
         if not mode or not mode.isdigit() or int(mode) not in (1, 2, 3):
             console.print("Please enter a valid choice.")
             continue
@@ -127,7 +128,7 @@ def name_files_cmd(
             console.print(f"[red]No TVDB results for:[/red] {show_query}")
             raise typer.Exit(code=1)
         selected_series_data = _prompt_for_series_from_hits(tvdb_hits)
-        while console.status("Fetching series info"):
+        with console.status("Fetching series info"):
             series_info = client.get_series_info(selected_series_data)
         mode = _prompt_for_mode()
         files = _list_video_files_to_rename(input_dir)

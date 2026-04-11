@@ -196,13 +196,13 @@ class TVDBClient:
 
         """
         # 1) translation endpoint (explicit English)
-        trans = self.episode_translation(episode_id, language)
+        trans = self.get_episode_translation(episode_id, language)
         if trans:
             name = trans.get("name")
             if isinstance(name, str) and name.strip():
                 return name.strip()
         # 2) fallback to episode details
-        ep = self.episode_by_id(episode_id)
+        ep = self.get_episode_by_id(episode_id)
         for key in ("name", "episodeName"):
             val = ep.get(key)
             if isinstance(val, str) and val.strip():
@@ -225,7 +225,7 @@ class TVDBClient:
 
         """
         series_id = series_data.get("tvdb_id")
-        if series_id is None or not isinstance(series_id, str) or not series_id.is_digit():
+        if series_id is None or not isinstance(series_id, str) or not series_id.isdigit():
             raise TypeError(f"TVDB series id was unexpected type '{type(series_id)}'. Expected digit str.")
         series_id = int(series_id)
         title = series_data.get("name", "")
@@ -246,12 +246,13 @@ class TVDBClient:
         res.raise_for_status()
         self.token = res.json().get("data", {}).get("token")
 
-    def populate_series_episodes(self, series_info: TVDBSeries, season_type: str = "official") -> None:
+    def populate_series_episodes(self, series_info: TVDBSeries, season_type: str = "official", localization_lang: str = "eng") -> None:
         """Populate the given series_info object's .episodes field.
 
         Args:
             series_info (TVDBSeries): The TVDBSeries to populate episodes for.
             season_type (str, optional): The season type. Defaults to "official".
+            localization_lang (str, optional): The localization language. Defaults to "eng".
 
         """
         series_episodes: list[TVDBEpisode] = []
